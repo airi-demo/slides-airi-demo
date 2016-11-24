@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Survey of Machine Learning API Services</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+    <script>
+        try {
+            WebFont.load({
+                google: {
+                    //families: ['Noto Sans KR']
+                    // For early access or custom font
+                    custom: {
+                        families: ['Noto Sans KR'],
+                        urls: ['https://fonts.googleapis.com/earlyaccess/notosanskr.css']
+                    }
+                }
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    </script>
+    <link rel="stylesheet" href="../../css/reveal.css">
+    <link rel="stylesheet" href="../../css/theme/white-ko.css">
+    <!-- <link rel="stylesheet" href="../../css/theme/white.css"> -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../../lib/css/zenburn.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1> 주요 인공지능 서비스 API </h1>
+                <br/>
+                <h3> 지능정보기술연구원 </h3>
+                <br/>
+                <h3> 2016.09 </h3>
+            </section>
+            <section>
+                <section data-markdown="outline-01.md" id="outline-01" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            <section>
+                <section data-markdown="ibm-watson.md" id="ibm-watson" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            <section>
+                <section data-markdown="microsoft.md" id="microsoft" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            <section>
+                <section data-markdown="microsoft-01.md" id="microsoft-01" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            </section>
+            <section>
+                <section data-markdown="google.md" id="google" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            <section>
+                <section data-markdown="chatbot.md" id="chatbot" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            <section>
+                <section data-markdown="chatbot-01.md" id="chatbot-01" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            <section>
+                <section data-markdown="language-processing.md" id="language-processing" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+                <section>
+                    <h3>battle-text/src/service-watson.js</h3>
+                    <!--<img src="images/code-fragments/text-watson-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var extract_list = [
+    'authors', 'concepts', 'dates', 'doc-emotion', 'entities',
+    'feeds', 'keywords', 'pub-date', 'relations', 'typed-rels',
+    'doc-sentiment', 'taxonomy', 'title'
+];
+request.post({
+    method: 'POST',
+    url: 'https://gateway-a.watsonplatform.net/calls/text/TextGetCombinedData',
+    form: {
+        apikey: ALCHEMY_API_KEY,
+        extract: extract_list.join(','),
+        outputMode: 'json',
+        showSourceText: 0,
+        text: 'text string'
+    }
+}, function(er, response, body) {
+    if (er) throw er;
+    callback(response.body);
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-text/src/service-ms.js</h3>
+                    <!--<img src="images/code-fragments/text-ms-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var json_request = { "documents": [{}] };
+json_request.documents[0].id = "0000000001";
+json_request.documents[0].language = "en";
+json_request.documents[0].text = data;
+request.post({
+    method: 'POST',
+    url: 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases',
+    json: json_request,
+    headers: { 'Ocp-Apim-Subscription-Key': MS_TEXT_API_KEY }
+}, function(er, response, body) {
+    if (er) throw er;
+    callback(response.body);
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-text/src/service-google.js</h3>
+                    <!--<img src="images/code-fragments/text-google-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var json_request = {
+    "document": {},
+    "features": {
+        "extractSyntax": "true",
+        "extractEntities": "true",
+        "extractDocumentSentiment": "true",
+    },
+    "encodingType": "UTF8"
+};
+json_request.document['type'] = 'PLAIN_TEXT';
+json_request.document['content'] = data;
+request.post({
+    method: 'POST',
+    url: 'https://language.googleapis.com/v1beta1/documents:annotateText',
+    json: json_request,
+    headers: {
+        'Authorization': 'Bearer ' + GOOGLE_ACCESS_TOKEN
+    }
+}, function(er, response, body) {
+    if (er) throw er;
+    callback(response.body);
+});
+</code></pre>
+                </section>
+            </section>
+            <section>
+                <section data-markdown="speech-processing.md" id="speech-processing" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+                <section>
+                    <h3>test-ibm-watson/02_speech/003-test-recognize.js</h3>
+                    <!--<img src="images/code-fragments/speech-watson-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var watson = require('watson-developer-cloud');
+var speech_to_text = watson.speech_to_text({
+    username: config.username,
+    password: config.password,
+    version: config.version,
+});
+var recognizeStream = speech_to_text.createRecognizeStream({
+    content_type: 'audio/wav',
+    continuous: true,
+    interim_results: true
+});
+fs.createReadStream(file).pipe(recognizeStream);
+recognizeStream.pipe(fs.createWriteStream('transcription.txt'));
+recognizeStream.setEncoding('utf8');
+recognizeStream.on('data', function(event) { onEvent('Data:', event); });
+recognizeStream.on('results', function(event) { onEvent('Results:', event); });
+recognizeStream.on('error', function(event) { onEvent('Error:', event); });
+recognizeStream.on('close-connection', function(event) { onEvent('Close:', event); });
+function onEvent(name, event) {
+    console.log(name, event);
+};
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-speech/src/service_microsoft.js</h3>
+                    <!--<img src="images/code-fragments/speech-ms-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var oxfordspeech = Microsoft.ProjectOxford.SpeechRecognition,
+    client = oxfordspeech.SpeechRecognitionServiceFactory.createDataClient(
+        oxfordspeech.SpeechRecognitionMode.shortPhrase,
+        'en-US',
+        MS_SPEECH_API_KEY,
+        MS_SPEECH_API_KEY);
+client.onPartialResponseReceived = function(response) {
+    doSomething(response);
+};
+client.onFinalResponseReceived = function(response) {
+    doSomething(response);
+};
+client.onIntentReceived = function(response) {
+    doSomething(response);
+};
+client.onError = function(errcode, msg) {
+    console.error(msg);
+};
+client.sendAudio(wav_slice); // ArrayBuffer
+client.endAudio();
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-speech/src/service_google.js</h3>
+                    <!--<img src="images/code-fragments/speech-google-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var json_request = {
+    'config': {
+        'encoding': 'LINEAR16',
+        'sample_rate': 16000,
+        'languageCode': 'en-US',
+        'maxAlternatives': 5,
+        'profanityFilter': false,
+    },
+    'audio': {}
+};
+json_request.audio.content = _arrayBufferToBase64(wav.buffer, 0, wav.byteLength);
+request.post({
+    method: 'POST',
+    url: 'https://speech.googleapis.com/v1beta1/speech:syncrecognize',
+    body: JSON.stringify(json_request),
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GOOGLE_ACCESS_TOKEN
+    }
+}, function(er, response, body) {
+    if (er) throw er;
+    callback(response.body);
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-speech/get-google-token.js</h3>
+                    <!--<img src="images/code-fragments/get-google-token-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var google = require('googleapis');
+var key = require('./.service-account-key.json');
+var jwtClient = new google.auth.JWT(
+    key.client_email,
+    null,
+    key.private_key, ['https://www.googleapis.com/auth/cloud-platform'],
+    null);
+
+function get_google_token(callback) {
+    jwtClient.authorize(function(err, tokens) {
+        if (err) throw err;
+        callback(null, tokens.access_token);
+    });
+}</code></pre>
+                </section>
+                <section>
+                    <h3>battle-speech/src/service_amazon.js</h3>
+                    <!--<img src="images/code-fragments/speech-amazon-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var payload_request = {
+    'messageHeader': {
+        'deviceContext': [{
+            'name': 'playbackState',
+            'namespace': 'AudioPlayer',
+            'payload': {
+                'streamId': stream_id,
+                'offsetInMilliseconds': '0',
+                'playerActivity': 'IDLE'
+            }
+        }]
+    },
+    'messageBody': {
+        'profile': 'alexa-close-talk',
+        'locale': 'en-us',
+        'format': 'audio/L16; rate=16000; channels=1'
+    }
+};
+options.files['request#application/json; charset=UTF-8'] = JSON.stringify(payload_request, null, '  ');;
+options.files['audio#audio/L16; rate=16000; channels=1'] = wavbuffer; // ArrayBuffer
+var ws = new(require('browser-websocket'))('wss://gc-airi-demo.keyma.kr/alexa-skill-ws');
+ws.on('message', function(e) {...output text... })
+request.post({
+    method: 'POST',
+    url: 'https://access-alexa-na.amazon.com/v1/avs/speechrecognizer/recognize',
+    files: {
+        'request#application/json; charset=UTF-8': JSON.stringify(payload_request),
+        'audio#audio/L16; rate=16000; channels=1': wavbuffer; // ArrayBuffer
+    },
+    headers: { 'Authorization': 'Bearer ' + amazon_token },
+}, function(er, response, body) {
+    if (er) throw er;
+    callback(response.body);
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-speech/src/service_amazon.js</h3>
+                    <!--<img src="images/code-fragments/get-amazon-token-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var json_request = {
+    'client_id': ALEXA_Client_ID,
+    'client_secret': ALEXA_Client_Secret,
+    'refresh_token': ALEXA_refresh_token,
+    'grant_type': 'refresh_token'
+};
+request.post({
+    method: 'POST',
+    url: 'https://api.amazon.com/auth/o2/token',
+    json: json_request,
+}, function(er, response, body) {
+    if (er) throw er;
+    var token = decodeURI(response.body.access_token);
+    callback(token);
+});
+</code></pre>
+                </section>
+            </section>
+            <section>
+                <section data-markdown="vision-processing.md" id="vision-processing" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+                <section>
+                    <h3>battle-vision/app.js (ibm/watson)</h3>
+                    <!--<img src="images/code-fragments/vision-watson-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var watson = require('watson-developer-cloud');
+var visualRecognition = watson.visual_recognition({
+    version: 'v3',
+    api_key: WATSON_API_KEY,
+    version_date: '2015-05-19'
+});
+var params = {};
+params.images_file = fs.createReadStream(file_path);
+visualRecognition.classify(params, function(err, res) {
+    if (err) throw err;
+    callback(res);
+});
+visualRecognition.detectFaces(params, function(err, res) {
+    if (err) throw err;
+    callback(res);
+});
+visualRecognition.recognizeText(params, function(err, res) {
+    if (err) throw err;
+    callback(res);
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>test-ibm-watson/03_visual/003-test-facedet-get.sh</h3>
+                    <!--<img src="images/code-fragments/vision-watson-sh.png" />-->
+                    <pre><code data-trim data-noescape>
+version=2016-05-20
+curl "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/detect_faces?api_key=${api_key}&url=${url}&version=${version}"
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-vision/service-ms.js</h3>
+                    <!--<img src="images/code-fragments/vision-ms-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var features = [
+    'Categories',
+    'Tags',
+    'Description',
+    'Faces',
+    'ImageType',
+    'Color',
+    'Adult',
+].join(',');
+var details = ['Celebrities'].join(','); // for 'Faces'
+var json_request = {
+    method: 'POST',
+    url: 'https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=' + features + '&details=' + details,
+    json: { 'url': image_url },
+    headers: {
+        'Ocp-Apim-Subscription-Key': MS_VISION_API_KEY,
+        'Content-Type': 'application/json'
+    }
+};
+request.post(json_request, function(er, response, body) {
+    if (er) throw er;
+    callback(null, body);
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>battle-vision/service-google.js</h3>
+                    <!--<img src="images/code-fragments/vision-google-js.png" />-->
+                    <pre><code data-trim data-noescape>
+var vision = require('@google-cloud/vision')({
+    projectId: 'western-oarlock-141504',
+    keyFilename: '.service-account-key.json'
+});
+var json_request = {
+    image: {
+    },
+    //FACE_DETECTION LANDMARK_DETECTION LOGO_DETECTION LABEL_DETECTION TEXT_DETECTION SAFE_SEARCH_DETECTION IMAGE_PROPERTIES
+    features: [{type: 'FACE_DETECTION', maxResults: 5, }, { type: 'LABEL_DETECTION', maxResults: 5, }, { type: 'TEXT_DETECTION', maxResults: 5, }],
+    imageContext: { languageHints: [], }
+};
+json_request.image.content = image_content_base64;
+vision.annotate(json_request, function(err, annotations, apiResponse) {
+    if (err) throw (err);
+    callback(annotations);
+});
+</code></pre>
+                </section>
+            </section>
+            <section>
+                <section data-markdown="chatbot-demo.md" id="chatbot-demo" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+                <section>
+                    <h3>app.js (facebook)</h3>
+                    <pre><code data-trim data-noescape>
+app.post('/webhook', function(req, res) {
+    var data = req.body;
+    if (data.object == 'page') {
+        data.entry.forEach(function(pageEntry) {
+            var pageID = pageEntry.id;
+            var timeOfEvent = pageEntry.time;
+            pageEntry.messaging.forEach(function(messagingEvent) {
+                if (messagingEvent.optin) {
+                    receivedAuthentication(messagingEvent);
+                } else if (messagingEvent.message) {
+                    receivedMessage(messagingEvent);
+                } else {
+                    console.log("unknown:", messagingEvent);
+                }
+            });
+        });
+        res.sendStatus(200);
+    }
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>app.js (facebook)</h3>
+                    <pre><code data-trim data-noescape>
+function receivedMessage(event) {
+    var senderID = event.sender.id;
+    var message = event.message;
+    var messageText = message.text;
+    if (messageText) {
+        switch (messageText) {
+            case 'image':
+                sendImageMessage(senderID);
+                break;
+            default:
+                wit_ai_service(senderID, messageText);
+                api_ai_service(senderID, messageText);
+        }
+    }
+}
+</code></pre>
+                </section>
+                <section>
+                    <h3>alexa-skill.js</h3>
+                    <pre><code data-trim data-noescape>
+app.post('/alexa-skill', function(req, res) {
+    var answer = { };
+    if (req.body.request.type === 'IntentRequest') {
+        var intent = req.body.request.intent;
+        if (intent.name === 'RawText') {
+            var literal = intent.slots.Text.value;
+            stt_ws_server.connections.forEach(function(conn) {
+                conn.sendText(literal);
+            });
+            answer.response.outputSpeech.text = literal;
+            answer.response.shouldEndSession = false;
+        }
+        res.send(answer);
+    }
+});
+</code></pre>
+                </section>
+                <section>
+                    <h3>alexa-skill.js</h3>
+                    <pre><code data-trim data-noescape>
+var answer = {
+    "version": "1.0",
+    "response": {
+        "outputSpeech": {
+            "type": "PlainText",
+            "text": "",
+        },
+        "card": {
+            "type": "Simple",
+            "title": "HelloWorld",
+            "content": "",
+        },
+        "reprompt": {
+            "outputSpeech": {
+                "type": "PlainText",
+                "text": ""
+            }
+        },
+        "shouldEndSession": true
+    },
+    "sessionAttributes": {}
+};
+</code></pre>
+                </section>
+                <section>
+                    <h3>wit-ai-quickstart.js</h3>
+                    <pre><code data-trim data-noescape>
+function createWit(sendTextFunction) {
+    const actions = {
+        send(request, response) {
+            const { sessionId, context, entities } = request;
+            const { text, quickreplies } = response;
+            return new Promise(function(resolve, reject) {
+                const recipientId = sessions[sessionId].fbid;
+                if (recipientId) {
+                    sendTextFunction(recipientId, '[wit.ai] ' + response.text);
+                }
+                return resolve();
+            });
+        },
+        getForecast({ context, entities }) {
+            return new Promise(function(resolve, reject) {
+                var location = firstEntityValue(entities, 'location')
+                if (location) {
+                    context.forecast = 'sunny in ' + location; // we should call a weather API here
+                    delete context.missingLocation;
+                } else {
+                    context.missingLocation = true;
+                    delete context.forecast;
+                }
+                return resolve(context);
+            });
+        },
+    };
+    const client = new Wit({ accessToken, actions, logger: new log.Logger(log.DEBUG) });
+    return function run(sender, text) {
+        const sessionId = findOrCreateSession(sender);
+        client.runActions(
+            sessionId,
+            text,
+            sessions[sessionId].context
+        ).then(function(context) {
+            console.log('Waiting for next user messages');
+            sessions[sessionId].context = context;
+        }).catch(function(err) {
+            console.error('fb-webhook:', 'error from Wit:', err.stack || err);
+        });
+    }
+}
+</code></pre>
+                </section>
+                <section>
+                    <h3>api-ai-example.js</h3>
+                    <pre><code data-trim data-noescape>
+function apiAiExample(sendTextFunction) {
+    return function handle(sender, text) {
+        var request = apiaiApp.textRequest(text);
+        request.on('response', function(response) {
+            if (response.result &&
+                response.result.fulfillment &&
+                response.result.fulfillment.speech) {
+                sendTextFunction(sender, '[api.ai] ' + response.result.fulfillment.speech);
+            }
+        });
+        request.on('error', function(error) {
+            console.error('api.ai: error:', error);
+        });
+        request.end();
+    }
+}
+</code></pre>
+                </section>
+            </section>
+            <section>
+                <section data-markdown="snowboy.md" id="snowboy" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+                <section>
+                    <img src="images/snowboy-1.png" />
+                </section>
+                <section>
+                    <img src="images/snowboy-2.png" />
+                </section>
+                <section>
+                    <h3>snowboy-remote-control.py</h3>
+                    <pre><code data-trim data-noescape>
+def callback_next():
+    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
+    print ("[next]", requests.get(config['url'] + "/next"))
+
+def callback_back():
+    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
+    print ("[back]", requests.get(config['url'] + "/back"))
+
+models = ['k-next.pmdl','k-back.pmdl']
+sensitivity = [0.29,0.35]
+
+detector = snowboydecoder.HotwordDetector(models, sensitivity = sensitivity)
+print('Listening... Press Ctrl+C to exit')
+
+callbacks = [ callback_next, callback_back ]
+detector.start(detected_callback=callbacks,
+               interrupt_check=interrupt_callback,
+               sleep_time=0.03)
+detector.terminate()
+</code></pre>
+                </section>
+            </section>
+            <section>
+                <section data-markdown="subscriptions.md" id="subscriptions" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+            <section>
+                <section data-markdown="subscriptions-01.md" id="subscriptions-01" data-separator="^\n\n\n" data-separator-vertical="^\n\n" data-separator-notes="^Note:" data-charset="utf-8">
+                </section>
+            </section>
+        </div>
+    </div>
+    <script src="../../lib/js/head.min.js"></script>
+    <script src="../../js/reveal.js"></script>
+    <script src="plugin/snowboy-remote/browserWebSocket.min.js" id="BrowserWebSocket"></script>
+    <script>
+        Reveal.initialize({
+
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            // The "normal" size of the presentation, aspect ratio will be preserved
+            // when the presentation is scaled to fit different resolutions. Can be
+            // specified using percentage units.
+            width: 1200,
+            height: 800,
+
+            // Factor of the display size that should remain empty around the content
+            margin: 0.05,
+
+            // Bounds for smallest/largest possible scale to apply to content
+            //minScale: 0.2,
+            //maxScale: 1.0
+
+            // Optional libraries used to extend on reveal.js
+            dependencies: [{
+                src: '../../lib/js/classList.js',
+                condition: function() {
+                    return !document.body.classList;
+                }
+            }, {
+                src: 'plugin/markdown/marked.js',
+                condition: function() {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            }, {
+                src: 'plugin/markdown/markdown.js',
+                condition: function() {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/notes/notes.js'
+            }, {
+                src: 'plugin/menu/menu.js'
+            }, {
+                src: 'plugin/snowboy-remote/snowboy-remote.js',
+                async: true
+            }, ]
+        });
+    </script>
+</body>
+
+</html>
+<!--
+// Emacs:
+// Local Variables:
+// tab-width: 4
+// indent-tabs-mode: nil
+// End:
+// vim: sw=4 sts=4 ts=8 et :
+-->
